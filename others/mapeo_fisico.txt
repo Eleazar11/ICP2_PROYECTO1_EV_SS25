@@ -1,0 +1,249 @@
+DROP DATABASE IF EXISTS plataforma_videojuegos;
+CREATE DATABASE plataforma_videojuegos
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+
+USE plataforma_videojuegos;
+
+CREATE TABLE rol (
+    id_rol INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(20) UNIQUE NOT NULL
+);
+
+INSERT INTO rol (nombre) VALUES
+('ADMIN'),
+('EMPRESA'),
+('GAMER');
+
+CREATE TABLE usuario (
+    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+    correo VARCHAR(100) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    nombre_completo VARCHAR(100) NOT NULL,
+    fecha_nacimiento DATE NOT NULL,
+    nickname VARCHAR(50) UNIQUE,
+    telefono VARCHAR(20),
+    pais VARCHAR(50),
+    avatar_url VARCHAR(255),
+    fecha_registro DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    activo BOOLEAN NOT NULL DEFAULT TRUE
+);
+
+CREATE TABLE usuario_rol (
+    id_usuario INT NOT NULL,
+    id_rol INT NOT NULL,
+    PRIMARY KEY (id_usuario, id_rol),
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario),
+    FOREIGN KEY (id_rol) REFERENCES rol(id_rol)
+);
+
+CREATE TABLE empresa (
+    id_empresa INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL UNIQUE,
+    descripcion TEXT,
+    fecha_creacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    activa BOOLEAN NOT NULL DEFAULT TRUE
+);
+	
+CREATE TABLE usuario_empresa (
+    id_usuario INT PRIMARY KEY,
+    id_empresa INT NOT NULL,
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario),
+    FOREIGN KEY (id_empresa) REFERENCES empresa(id_empresa)
+);
+
+
+CREATE TABLE comision_global (
+    id_comision INT AUTO_INCREMENT PRIMARY KEY,
+    porcentaje DECIMAL(5,2) NOT NULL,
+    fecha_inicio DATETIME NOT NULL,
+    fecha_fin DATETIME
+);
+
+CREATE TABLE comision_empresa (
+    id_empresa INT PRIMARY KEY,
+    porcentaje DECIMAL(5,2) NOT NULL,
+    FOREIGN KEY (id_empresa) REFERENCES empresa(id_empresa)
+);
+
+CREATE TABLE clasificacion_edad (
+    id_clasificacion INT AUTO_INCREMENT PRIMARY KEY,
+    codigo VARCHAR(5) UNIQUE NOT NULL,
+    edad_minima INT NOT NULL
+);
+
+INSERT INTO clasificacion_edad (codigo, edad_minima) VALUES
+('E', 0),
+('T', 13),
+('M', 18);
+
+CREATE TABLE categoria (
+    id_categoria INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50) UNIQUE NOT NULL,
+    activa BOOLEAN NOT NULL DEFAULT TRUE
+);
+
+CREATE TABLE juego (
+    id_juego INT AUTO_INCREMENT PRIMARY KEY,
+    id_empresa INT NOT NULL,
+    titulo VARCHAR(100) NOT NULL,
+    descripcion TEXT,
+    precio DECIMAL(10,2) NOT NULL,
+    requisitos_minimos TEXT,
+    fecha_lanzamiento DATE,
+    activo BOOLEAN NOT NULL DEFAULT TRUE,
+    id_clasificacion INT NOT NULL,
+    FOREIGN KEY (id_empresa) REFERENCES empresa(id_empresa),
+    FOREIGN KEY (id_clasificacion) REFERENCES clasificacion_edad(id_clasificacion)
+);
+
+CREATE TABLE juego_categoria (
+    id_juego INT NOT NULL,
+    id_categoria INT NOT NULL,
+    aprobado BOOLEAN NOT NULL DEFAULT FALSE,
+    PRIMARY KEY (id_juego, id_categoria),
+    FOREIGN KEY (id_juego) REFERENCES juego(id_juego),
+    FOREIGN KEY (id_categoria) REFERENCES categoria(id_categoria)
+);
+
+CREATE TABLE juego_multimedia (
+    id_media INT AUTO_INCREMENT PRIMARY KEY,
+    id_juego INT NOT NULL,
+    url VARCHAR(255) NOT NULL,
+    tipo ENUM('IMAGEN','VIDEO') NOT NULL,
+    orden INT,
+    FOREIGN KEY (id_juego) REFERENCES juego(id_juego)
+);
+
+CREATE TABLE cartera (
+    id_usuario INT PRIMARY KEY,
+    saldo DECIMAL(10,2) NOT NULL DEFAULT 0,
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+);
+
+CREATE TABLE movimiento_cartera (
+    id_movimiento INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    tipo ENUM('RECARGA','COMPRA') NOT NULL,
+    monto DECIMAL(10,2) NOT NULL,
+    fecha DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    referencia VARCHAR(255),
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+);
+
+CREATE TABLE venta (
+    id_venta INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    fecha_compra DATETIME NOT NULL,
+    total_pagado DECIMAL(10,2),
+    porcentaje_comision DECIMAL(5,2),
+    comision_plataforma DECIMAL(10,2),
+    ingreso_empresa DECIMAL(10,2),
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+);
+
+CREATE TABLE venta_detalle (
+    id_venta INT NOT NULL,
+    id_juego INT NOT NULL,
+    precio_unitario DECIMAL(10,2) NOT NULL,
+    PRIMARY KEY (id_venta, id_juego),
+    FOREIGN KEY (id_venta) REFERENCES venta(id_venta),
+    FOREIGN KEY (id_juego) REFERENCES juego(id_juego)
+);
+
+CREATE TABLE biblioteca (
+    id_usuario INT NOT NULL,
+    id_juego INT NOT NULL,
+    fecha_adquisicion DATETIME NOT NULL,
+    es_propio BOOLEAN NOT NULL,
+    PRIMARY KEY (id_usuario, id_juego),
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario),
+    FOREIGN KEY (id_juego) REFERENCES juego(id_juego)
+);
+
+CREATE TABLE calificacion (
+    id_usuario INT NOT NULL,
+    id_juego INT NOT NULL,
+    estrellas INT CHECK (estrellas BETWEEN 1 AND 5),
+    fecha DATETIME NOT NULL,
+    PRIMARY KEY (id_usuario, id_juego),
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario),
+    FOREIGN KEY (id_juego) REFERENCES juego(id_juego)
+);
+
+CREATE TABLE comentario (
+    id_comentario INT AUTO_INCREMENT PRIMARY KEY,
+    id_juego INT NOT NULL,
+    id_usuario INT NOT NULL,
+    id_padre INT,
+    texto TEXT,
+    fecha DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    visible BOOLEAN NOT NULL DEFAULT TRUE,
+    FOREIGN KEY (id_juego) REFERENCES juego(id_juego),
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario),
+    FOREIGN KEY (id_padre) REFERENCES comentario(id_comentario)
+);
+
+CREATE TABLE grupo_familiar (
+    id_grupo INT AUTO_INCREMENT PRIMARY KEY,
+    id_creador INT NOT NULL,
+    fecha_creacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    activo BOOLEAN NOT NULL DEFAULT TRUE,
+    FOREIGN KEY (id_creador) REFERENCES usuario(id_usuario)
+);
+
+CREATE TABLE grupo_miembro (
+    id_grupo INT NOT NULL,
+    id_usuario INT NOT NULL,
+    PRIMARY KEY (id_grupo, id_usuario),
+    FOREIGN KEY (id_grupo) REFERENCES grupo_familiar(id_grupo),
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+);
+
+CREATE TABLE instalacion_juego (
+    id_usuario INT NOT NULL,
+    id_juego INT NOT NULL,
+    estado ENUM('INSTALADO','NO_INSTALADO') NOT NULL,
+    fecha_inicio DATETIME,
+    fecha_fin DATETIME,
+    PRIMARY KEY (id_usuario, id_juego),
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario),
+    FOREIGN KEY (id_juego) REFERENCES juego(id_juego)
+);
+
+CREATE TABLE banner (
+    id_banner INT AUTO_INCREMENT PRIMARY KEY,
+    id_juego INT NOT NULL,
+    imagen_url VARCHAR(255),
+    orden INT,
+    activo BOOLEAN NOT NULL DEFAULT TRUE,
+    FOREIGN KEY (id_juego) REFERENCES juego(id_juego)
+);
+
+-- ADMIN
+INSERT INTO usuario (correo, password_hash, nombre_completo, fecha_nacimiento)
+VALUES ('admin@plataforma.com', 'hash_admin', 'Administrador General', '1990-01-01');
+
+-- EMPRESA
+INSERT INTO usuario (correo, password_hash, nombre_completo, fecha_nacimiento)
+VALUES ('empresa@devstudio.com', 'hash_empresa', 'Carlos Dev', '1988-05-10');
+
+-- GAMER
+INSERT INTO usuario (correo, password_hash, nombre_completo, fecha_nacimiento, nickname, telefono, pais)
+VALUES ('gamer@mail.com', 'hash_gamer', 'Luis Gamer', '2002-08-15', 'LuisPlay', '55512345', 'Guatemala');
+
+-- ROLES
+INSERT INTO usuario_rol VALUES
+(1, 1), -- ADMIN
+(2, 2), -- EMPRESA
+(3, 3); -- GAMER
+
+-- EMPRESA
+INSERT INTO empresa (nombre, descripcion)
+VALUES ('DevStudio GT', 'Estudio independiente de videojuegos');
+
+-- USUARIO EMPRESA
+INSERT INTO usuario_empresa VALUES (2, 1);
+
+
+
