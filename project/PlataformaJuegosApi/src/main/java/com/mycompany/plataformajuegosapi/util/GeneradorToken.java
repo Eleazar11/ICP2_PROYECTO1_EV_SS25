@@ -18,16 +18,18 @@ import java.util.Date;
 public class GeneradorToken {
 
     // Llave secreta para firmar el token
-    private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256); 
-    
+    private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+
     // Para iniciar sesion
     public String crearTokenJWT(Usuario usuario) {
         return Jwts.builder()
-                //.setSubject(usuario.getCorreo()) // Añade el nombre de usuario
-                //.claim("rol", usuario.getRol()) // Añade el rol como una claim
-                .setIssuedAt(new Date()) // Fecha de emisión
-                .setExpiration(new Date(System.currentTimeMillis() + 3600000)) // Expira en 1 hora
-                .signWith(SECRET_KEY) // Firma con la clave secreta
+                .setSubject(usuario.getCorreo())
+                .claim("idUsuario", usuario.getId_usuario())
+                .claim("rol", usuario.getRol().name())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 3600000))
+                .signWith(SECRET_KEY)
                 .compact();
     }
+
 }

@@ -27,11 +27,12 @@ public class UsuarioController {
 
     private UsuarioService usuarioService;
     private static final String SECRET_KEY = "clave_usr_bati_juegos";
+
     public UsuarioController() {
         this.usuarioService = new UsuarioService();
     }
 
-       @POST
+    @POST
     @Path("/registro")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -71,7 +72,35 @@ public class UsuarioController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response loginUsuario(Usuario usuario) {
-        return null;
+
+        try {
+            Usuario usuarioAutenticado = usuarioService.autenticarUsuario(
+                    usuario.getCorreo(),
+                    usuario.getContrasena()
+            );
+
+            GeneradorToken generadorToken = new GeneradorToken();
+            String token = generadorToken.crearTokenJWT(usuarioAutenticado);
+
+            Map<String, Object> respuesta = new HashMap<>();
+            respuesta.put("token", token);
+            respuesta.put("idUsuario", usuarioAutenticado.getId_usuario());
+            respuesta.put("correo", usuarioAutenticado.getCorreo());
+            respuesta.put("rol", usuarioAutenticado.getRol());
+
+            return Response.ok(respuesta).build();
+
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity(Map.of("error", e.getMessage()))
+                    .build();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.serverError()
+                    .entity(Map.of("error", "Error en el login"))
+                    .build();
+        }
     }
 
 }

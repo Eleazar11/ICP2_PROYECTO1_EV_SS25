@@ -161,4 +161,34 @@ public class UsuarioDB {
         }
     }
 
+    public Usuario obtenerUsuarioPorCorreo(String correo) throws SQLException {
+
+        String sql
+                = "SELECT u.id_usuario, u.correo, u.password_hash, u.activo, r.nombre AS rol "
+                + "FROM usuario u "
+                + "JOIN usuario_rol ur ON u.id_usuario = ur.id_usuario "
+                + "JOIN rol r ON ur.id_rol = r.id_rol "
+                + "WHERE u.correo = ?";
+
+        try (Connection conn = DataSourceDBSingleton.getInstance().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, correo);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Usuario usuario = new Usuario();
+                    usuario.setId_usuario(rs.getInt("id_usuario"));
+                    usuario.setCorreo(rs.getString("correo"));
+
+                    usuario.setContrasena(rs.getString("password_hash"));
+
+                    usuario.setActivo(rs.getBoolean("activo"));
+                    usuario.setRol(Rol.valueOf(rs.getString("rol")));
+                    return usuario;
+                }
+            }
+        }
+        return null;
+    }
+
 }
