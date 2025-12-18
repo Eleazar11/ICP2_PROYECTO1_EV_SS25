@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  *
@@ -28,8 +29,8 @@ public class UsuarioDB {
 
         String sqlUsuario
                 = "INSERT INTO usuario "
-                + "(correo, password_hash, nombre_completo, fecha_nacimiento, nickname, telefono, pais, avatar_url, activo) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)";
+                + "(correo, password_hash, nombre_completo, fecha_nacimiento, nickname, telefono, pais, activo) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, 1)";
 
         String sqlUsuarioRol
                 = "INSERT INTO usuario_rol (id_usuario, id_rol) "
@@ -54,7 +55,6 @@ public class UsuarioDB {
                 ps.setString(5, usuario.getNickname());
                 ps.setString(6, usuario.getTelefono());
                 ps.setString(7, usuario.getPais());
-                ps.setString(8, usuario.getAvatar_url());
 
                 ps.executeUpdate();
 
@@ -121,6 +121,42 @@ public class UsuarioDB {
 
             ps.setString(1, avatarUrl);
             ps.setInt(2, idUsuario);
+            ps.executeUpdate();
+        }
+    }
+
+    //para empresa
+    public void registrarUsuario(Usuario usuario, Connection conn) throws SQLException {
+
+        String sqlUsuario
+                = "INSERT INTO usuario "
+                + "(correo, password_hash, nombre_completo, fecha_nacimiento, nickname, telefono, pais, activo) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, 1)";
+
+        String sqlUsuarioRol
+                = "INSERT INTO usuario_rol (id_usuario, id_rol) VALUES (?, ?)";
+
+        try (PreparedStatement ps = conn.prepareStatement(sqlUsuario, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, usuario.getCorreo());
+            ps.setString(2, seguridad.encriptarContrasena(usuario.getContrasena()));
+            ps.setString(3, usuario.getNombre_completo());
+            ps.setDate(4, new java.sql.Date(usuario.getFecha_nacimiento().getTime()));
+            ps.setString(5, usuario.getNickname());
+            ps.setString(6, usuario.getTelefono());
+            ps.setString(7, usuario.getPais());
+            ps.executeUpdate();
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (!rs.next()) {
+                    throw new SQLException("No se pudo obtener ID del usuario");
+                }
+                usuario.setId_usuario(rs.getInt(1));
+            }
+        }
+
+        try (PreparedStatement ps = conn.prepareStatement(sqlUsuarioRol)) {
+            ps.setInt(1, usuario.getId_usuario());
+            ps.setInt(2, obtenerIdRol(usuario.getRol(), conn));
             ps.executeUpdate();
         }
     }
