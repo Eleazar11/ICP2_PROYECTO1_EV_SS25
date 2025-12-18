@@ -20,14 +20,14 @@ public class Usuario {
     private Rol rol;
     private String telefono;
     private String pais;
-    private String avatar_url;
     private Date fechaRegistro;
     private boolean activo;
+
 
     public Usuario() {
     }
 
-    public Usuario(String correo, String contrasena, String nombre_completo, Date fecha_nacimiento, String nickname, Rol rol, String telefono, String pais, String avatar_url) {
+    public Usuario(String correo, String contrasena, String nombre_completo, Date fecha_nacimiento, String nickname, Rol rol, String telefono, String pais) {
         this.correo = correo;
         this.contrasena = contrasena;
         this.nombre_completo = nombre_completo;
@@ -36,10 +36,9 @@ public class Usuario {
         this.rol = rol;
         this.telefono = telefono;
         this.pais = pais;
-        this.avatar_url = avatar_url;
         this.activo = true;
     }
- 
+
     
     public int getId_usuario() {
         return id_usuario;
@@ -111,14 +110,6 @@ public class Usuario {
 
     public void setPais(String pais) {
         this.pais = pais;
-    }
-
-    public String getAvatar_url() {
-        return avatar_url;
-    }
-
-    public void setAvatar_url(String avatar_url) {
-        this.avatar_url = avatar_url;
     }
 
     public Date getFechaRegistro() {
