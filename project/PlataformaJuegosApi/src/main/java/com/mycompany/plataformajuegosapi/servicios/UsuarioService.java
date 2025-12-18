@@ -44,7 +44,27 @@ public class UsuarioService {
     }
 
     public Usuario autenticarUsuario(String correo, String contrasenaIngresada) throws SQLException {
-        return null;
+
+        Usuario usuario = usuarioDB.obtenerUsuarioPorCorreo(correo);
+
+        if (usuario == null) {
+            throw new IllegalArgumentException("Credenciales inválidas");
+        }
+
+        if (!usuario.isActivo()) {
+            throw new IllegalArgumentException("Usuario inactivo");
+        }
+
+        boolean coincide = seguridad.verificarContrasena(
+                contrasenaIngresada,
+                usuario.getContrasena()
+        );
+
+        if (!coincide) {
+            throw new IllegalArgumentException("Credenciales inválidas");
+        }
+
+        return usuario;
     }
 
     public void actualizarAvatarUsuario(int idUsuario, String avatarUrl) throws SQLException {
