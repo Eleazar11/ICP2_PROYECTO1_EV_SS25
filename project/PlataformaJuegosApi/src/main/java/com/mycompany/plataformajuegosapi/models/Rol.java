@@ -8,6 +8,6 @@ package com.mycompany.plataformajuegosapi.models;
  *
  * @author eleaz
  */
-public class Rol {
-    
+public enum Rol {
+    ADMIN, GAMER, EMPRESA
 }
