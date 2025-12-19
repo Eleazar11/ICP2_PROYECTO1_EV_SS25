@@ -44,7 +44,7 @@ public class UsuarioDB {
 
         try {
             conn = DataSourceDBSingleton.getInstance().getConnection();
-            conn.setAutoCommit(false); // INICIO TRANSACCIÓN
+            conn.setAutoCommit(false); //Iniciamos transaccion
    
             try (PreparedStatement ps = conn.prepareStatement(sqlUsuario, PreparedStatement.RETURN_GENERATED_KEYS)) {
                 ps.setString(1, usuario.getCorreo());

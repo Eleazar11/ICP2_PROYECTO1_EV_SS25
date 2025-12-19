@@ -1,1 +1,137 @@
-<p>registro-empresa works!</p>
+<section class="vh-100" style="background-color: #f4f6f9;">
+  <div class="container h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-lg-12 col-xl-10">
+        <div class="card text-black" style="border-radius: 25px;">
+          <div class="card-body p-md-5">
+            <div class="row justify-content-center">
+              <div class="col-md-10 col-lg-6 col-xl-5">
+
+                <p class="text-center h1 fw-bold mb-5 mt-4">
+                  Registro de Empresa
+                </p>
+
+                <form #empresaForm="ngForm"
+                      (ngSubmit)="onRegister(empresaForm)"
+                      class="mx-1 mx-md-4">
+
+                  <!-- Nombre Empresa -->
+                  <div class="mb-4">
+                    <label class="form-label">Nombre de la Empresa</label>
+                    <input
+                      type="text"
+                      name="nombreEmpresa"
+                      [(ngModel)]="form.empresa.nombreEmpresa"
+                      required
+                      class="form-control"
+                      #nombreEmpresa="ngModel">
+                    <div *ngIf="nombreEmpresa.invalid && nombreEmpresa.touched"
+                         class="text-danger small">
+                      El nombre de la empresa es obligatorio.
+                    </div>
+                  </div>
+
+                  <!-- Descripción -->
+                  <div class="mb-4">
+                    <label class="form-label">Descripción</label>
+                    <textarea
+                      name="descripcion"
+                      [(ngModel)]="form.empresa.descripcion"
+                      required
+                      class="form-control"
+                      rows="3"
+                      #descripcion="ngModel"></textarea>
+                    <div *ngIf="descripcion.invalid && descripcion.touched"
+                         class="text-danger small">
+                      La descripción es obligatoria.
+                    </div>
+                  </div>
+
+                  <hr class="my-4">
+
+                  <!-- Nombre completo -->
+                  <div class="mb-4">
+                    <label class="form-label">Nombre Completo</label>
+                    <input
+                      type="text"
+                      name="nombreCompleto"
+                      [(ngModel)]="form.usuario.nombreCompleto"
+                      required
+                      class="form-control"
+                      #nombreCompleto="ngModel">
+                  </div>
+
+                  <!-- Correo -->
+                  <div class="mb-4">
+                    <label class="form-label">Correo Electrónico</label>
+                    <input
+                      type="email"
+                      name="correo"
+                      [(ngModel)]="form.usuario.correo"
+                      required
+                      email
+                      class="form-control"
+                      #correo="ngModel">
+                  </div>
+
+                  <!-- Fecha nacimiento -->
+                  <div class="mb-4">
+                    <label class="form-label">Fecha de Nacimiento</label>
+                    <input
+                      type="date"
+                      name="fechaNacimiento"
+                      [(ngModel)]="form.usuario.fechaNacimiento"
+                      required
+                      class="form-control"
+                      #fechaNacimiento="ngModel">
+                  </div>
+
+                  <!-- Contraseña -->
+                  <div class="mb-4">
+                    <label class="form-label">Contraseña</label>
+                    <input
+                      type="password"
+                      name="contrasena"
+                      [(ngModel)]="form.usuario.contrasena"
+                      required
+                      minlength="6"
+                      class="form-control"
+                      #contrasena="ngModel">
+                  </div>
+
+                  <!-- Botón -->
+                  <div class="d-flex justify-content-center mb-3">
+                    <button
+                      type="submit"
+                      class="btn btn-primary btn-lg"
+                      [disabled]="empresaForm.invalid">
+                      Registrar Empresa
+                    </button>
+                  </div>
+
+                </form>
+
+                <!-- Mensajes -->
+                <div *ngIf="mensaje" class="alert alert-success text-center">
+                  {{ mensaje }}
+                </div>
+
+                <div *ngIf="errorMensaje" class="alert alert-danger text-center">
+                  {{ errorMensaje }}
+                </div>
+
+                <div class="text-center mt-4">
+                  <button class="btn btn-outline-secondary btn-lg"
+                          (click)="volverHome()">
+                    Volver al Inicio
+                  </button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

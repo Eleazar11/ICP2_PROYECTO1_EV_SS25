@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { RestConstants } from '../rest-constants';
 import { jwtDecode } from 'jwt-decode';
+import { Router } from '@angular/router';  
 
 @Injectable({
   providedIn: 'root'
@@ -85,4 +86,11 @@ export class UsuariosService {
     console.error('Error:', error);
     return throwError(() => error);
   }
+
+  // Cierra sesión eliminando token y redirige a login
+logout(router: Router): void {
+  this.eliminarToken();
+  router.navigate(['/login']);
+}
+
 }

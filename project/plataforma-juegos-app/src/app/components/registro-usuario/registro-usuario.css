@@ -1,14 +1,15 @@
 /* Fondo animado con gradiente oscuro tipo “BatiCine” */
 section {
-  background: linear-gradient(135deg, #0a0f1d, #1c2541, #3a506b);
-  background-size: 400% 400%;
-  min-height: 100vh;
+  min-height: 100vh; /* al menos toda la ventana */
+  height: auto;      /* permite crecer con el contenido */
   display: flex;
   justify-content: center;
-  align-items: center;
-  animation: gradientShift 10s ease infinite;
-  padding: 0; /* 🔸 quita el padding que descentraba */
+  align-items: flex-start; /* para que el contenido empiece desde arriba si es alto */
+  padding: 2rem 0; /* algo de espacio arriba y abajo */
   box-sizing: border-box;
+  background: linear-gradient(135deg, #0a0f1d, #1c2541, #3a506b);
+  background-size: 400% 400%;
+  animation: gradientShift 10s ease infinite;
 }
 
 
@@ -172,3 +173,4 @@ button.btn-outline-secondary:hover {
     font-size: 1.7rem;
   }
 }
+
