@@ -1,5 +1,5 @@
 export enum TipoUsuario {
   GAMER = 'GAMER',
-  ADMINISTRADOR = 'ADMINISTRADOR',
+  ADMIN = 'ADMIN',
   EMPRESA = 'EMPRESA'
 }
