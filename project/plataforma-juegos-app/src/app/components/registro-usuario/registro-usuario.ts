@@ -43,7 +43,7 @@ export class RegistroUsuario {
       pais: formValue.pais,
 
       // Controlados por el sistema
-      tipoUsuario: TipoUsuario.GAMER,
+      rol: TipoUsuario.GAMER,
       activo: true
     };
 

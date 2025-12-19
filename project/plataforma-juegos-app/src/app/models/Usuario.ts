@@ -7,7 +7,7 @@ export interface Usuario {
   nombreCompleto: string;
   fechaNacimiento: Date;
   nickname: string;
-  tipoUsuario: TipoUsuario;
+  rol: TipoUsuario;
   telefono?: string;
   pais?: string;
   fechaRegistro?: Date;
