@@ -1,11 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { RestConstants } from '../rest-constants'; // Asegúrate de que la ruta sea correcta
+import { RestConstants } from '../rest-constants';
 import { jwtDecode } from 'jwt-decode';
-
-
-
 
 @Injectable({
   providedIn: 'root'
@@ -14,82 +11,78 @@ export class UsuariosService {
 
   private apiUrl: string;
 
-  constructor(private http: HttpClient, private restConstants: RestConstants) {
-    this.apiUrl = `${this.restConstants.getApiURL()}/usuarios`; // URL del backend para usuarios
-  }
-  
-  // Método para registrar un nuevo usuario
-  registrarUsuario(usuario: any): Observable<any> {
-    console.log('Registrando usuario:', usuario);
-    return this.http.post(`${this.apiUrl}/registro`, usuario);
+  constructor(
+    private http: HttpClient,
+    private restConstants: RestConstants
+  ) {
+    // URL base del backend
+    this.apiUrl = `${this.restConstants.getApiURL()}/usuarios`;
   }
 
-  // Método para iniciar sesión
-  loginUsuario(loginData: any): Observable<string> {
+  // Registrar usuario (NO guarda token)
+  registrarUsuario(usuario: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/registro`, usuario)
+      .pipe(catchError(this.manejarError));
+  }
+
+  // Login de usuario (GUARDA token)
+  loginUsuario(loginData: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/login`, loginData).pipe(
-      map(response => {
-        const token = response.token; // Suponiendo que el token viene en el cuerpo
-        if (token) {
-          this.guardarToken(token); // Guardar el token en localStorage
-          return token; // Devuelve el token
-        } else {
-          throw new Error('Token no encontrado en la respuesta desde servicio usuarios');
+      map(resp => {
+        if (!resp?.token) {
+          throw new Error('Token no recibido');
         }
+        this.guardarToken(resp.token);
+        return resp;
       }),
-      catchError(error => {
-        console.error('Error en el login:', error);
-        return throwError(() => new Error('Error al iniciar sesión, verifique sus credenciales.'));
-      })
+      catchError(this.manejarError)
     );
   }
 
-  // *** Métodos para manejar el token en localStorage ***
-
-  // Guardar el token en localStorage
+  // Guardar token
   guardarToken(token: string): void {
     localStorage.setItem('token', token);
   }
 
-  // Obtener el token desde localStorage
+  // Obtener token
   obtenerToken(): string | null {
     return localStorage.getItem('token');
   }
 
-  // Eliminar el token de localStorage
+  // Eliminar token
   eliminarToken(): void {
     localStorage.removeItem('token');
   }
 
+  // Verificar rol
+  tienePermiso(rol: string): boolean {
+    const token = this.obtenerToken();
+    if (!token) return false;
+
+    try {
+      const decoded: any = jwtDecode(token);
+      return decoded.rol === rol;
+    } catch {
+      return false;
+    }
+  }
+
+  // Roles
   permisosAdministrador(): boolean {
     return this.tienePermiso('ADMINISTRADOR');
   }
 
-  permisosEditor(): boolean {
-    return this.tienePermiso('CLIENTE');
+  permisosEmpresa(): boolean {
+    return this.tienePermiso('EMPRESA');
   }
 
-  permisosAnunciante(): boolean {
-    return this.tienePermiso('MARKETING');
+  permisosGamer(): boolean {
+    return this.tienePermiso('GAMER');
   }
 
-  permisosSuscriptor(): boolean {
-    return this.tienePermiso('EMPLEADO');
-  }
-
-  private tienePermiso(rol: string): boolean {
-    const token = this.obtenerToken();
-    console.log('VIENDOLO DESDE EL SERVICIO');
-    console.log('Rol:', rol);
-    console.log('Token:', token);
-    
-    if (token) {
-      const decodedToken: any = jwtDecode(token); // Decodifica el token
-      console.log('Rol en el token:', decodedToken.rol);
-      console.log('Rol esperado:', rol);
-      return decodedToken.rol === rol; // Verifica el rol
-    }
-    console.log('No hay token o no tiene permisos para acceder a esta página');
-    return false; // Si no hay token, no tiene permisos de ningún tipo de usuario
+  // Manejo de errores
+  private manejarError(error: any) {
+    console.error('Error:', error);
+    return throwError(() => error);
   }
 }
-
