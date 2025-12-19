@@ -62,7 +62,7 @@ public class EmpresaDB {
             usuarioDB.registrarUsuario(usuario, conn);
 
             // 3. Relacionar usuario con empresa
-            vincularUsuarioEmpresa(usuario.getId_usuario(), idEmpresa, conn);
+            vincularUsuarioEmpresa(usuario.getIdUsuario(), idEmpresa, conn);
 
             conn.commit();
 

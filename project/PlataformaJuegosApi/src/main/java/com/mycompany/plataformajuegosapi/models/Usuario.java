@@ -11,11 +11,11 @@ import java.util.Date;
  * @author eleaz
  */
 public class Usuario {
-    private int id_usuario;
+    private int idUsuario;
     private String correo;
     private String contrasena;
-    private String nombre_completo;
-    private Date fecha_nacimiento ;
+    private String nombreCompleto;
+    private Date fechaNacimiento;
     private String nickname;
     private Rol rol;
     private String telefono;
@@ -27,11 +27,11 @@ public class Usuario {
     public Usuario() {
     }
 
-    public Usuario(String correo, String contrasena, String nombre_completo, Date fecha_nacimiento, String nickname, Rol rol, String telefono, String pais) {
+    public Usuario(String correo, String contrasena, String nombreCompleto, Date fechaNacimiento, String nickname, Rol rol, String telefono, String pais) {
         this.correo = correo;
         this.contrasena = contrasena;
-        this.nombre_completo = nombre_completo;
-        this.fecha_nacimiento = fecha_nacimiento;
+        this.nombreCompleto = nombreCompleto;
+        this.fechaNacimiento = fechaNacimiento;
         this.nickname = nickname;
         this.rol = rol;
         this.telefono = telefono;
@@ -39,13 +39,12 @@ public class Usuario {
         this.activo = true;
     }
 
-    
-    public int getId_usuario() {
-        return id_usuario;
+    public int getIdUsuario() {
+        return idUsuario;
     }
 
-    public void setId_usuario(int id_usuario) {
-        this.id_usuario = id_usuario;
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
     public String getCorreo() {
@@ -64,20 +63,20 @@ public class Usuario {
         this.contrasena = contrasena;
     }
 
-    public String getNombre_completo() {
-        return nombre_completo;
+    public String getNombreCompleto() {
+        return nombreCompleto;
     }
 
-    public void setNombre_completo(String nombre_completo) {
-        this.nombre_completo = nombre_completo;
+    public void setNombreCompleto(String nombreCompleto) {
+        this.nombreCompleto = nombreCompleto;
     }
 
-    public Date getFecha_nacimiento() {
-        return fecha_nacimiento;
+    public Date getFechaNacimiento() {
+        return fechaNacimiento;
     }
 
-    public void setFecha_nacimiento(Date fecha_nacimiento) {
-        this.fecha_nacimiento = fecha_nacimiento;
+    public void setFechaNacimiento(Date fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
     }
 
     public String getNickname() {
@@ -95,7 +94,7 @@ public class Usuario {
     public void setRol(Rol rol) {
         this.rol = rol;
     }
-    
+
     public String getTelefono() {
         return telefono;
     }
@@ -103,7 +102,6 @@ public class Usuario {
     public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
-
     public String getPais() {
         return pais;
     }
@@ -126,7 +124,5 @@ public class Usuario {
 
     public void setActivo(boolean activo) {
         this.activo = activo;
-    }
-    
-    
+    }  
 }

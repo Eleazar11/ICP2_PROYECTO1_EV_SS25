@@ -1,1 +1,168 @@
-<p>registro-usuario works!</p>
+<section class="vh-100" style="background-color: #f4f6f9;">
+  <div class="container h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-lg-12 col-xl-10">
+        <div class="card text-black" style="border-radius: 25px;">
+          <div class="card-body p-md-5">
+            <div class="row justify-content-center">
+              <div class="col-md-10 col-lg-6 col-xl-5">
+
+                <p class="text-center h1 fw-bold mb-5 mt-4">Registro de Usuario</p>
+
+                <form #usuarioForm="ngForm"
+                      (ngSubmit)="onRegister(usuarioForm)"
+                      class="mx-1 mx-md-4">
+
+                  <!-- Nickname -->
+                  <div class="mb-4">
+                    <label class="form-label">Nickname</label>
+                    <input
+                      type="text"
+                      name="nickname"
+                      ngModel
+                      required
+                      class="form-control"
+                      #nickname="ngModel">
+                    <div *ngIf="nickname.invalid && nickname.touched"
+                         class="text-danger small">
+                      El nickname es obligatorio.
+                    </div>
+                  </div>
+
+                  <!-- Nombre completo -->
+                  <div class="mb-4">
+                    <label class="form-label">Nombre Completo</label>
+                    <input
+                      type="text"
+                      name="nombreCompleto"
+                      ngModel
+                      required
+                      class="form-control"
+                      #nombreCompleto="ngModel">
+                    <div *ngIf="nombreCompleto.invalid && nombreCompleto.touched"
+                         class="text-danger small">
+                      El nombre completo es obligatorio.
+                    </div>
+                  </div>
+
+                  <!-- Correo -->
+                  <div class="mb-4">
+                    <label class="form-label">Correo Electrónico</label>
+                    <input
+                      type="email"
+                      name="correo"
+                      ngModel
+                      required
+                      email
+                      class="form-control"
+                      #correo="ngModel">
+                    <div *ngIf="correo.invalid && correo.touched"
+                         class="text-danger small">
+                      Ingrese un correo válido.
+                    </div>
+                  </div>
+
+                  <!-- Fecha de nacimiento -->
+                  <div class="mb-4">
+                    <label class="form-label">Fecha de Nacimiento</label>
+                    <input
+                      type="date"
+                      name="fechaNacimiento"
+                      ngModel
+                      required
+                      class="form-control"
+                      #fechaNacimiento="ngModel">
+                    <div *ngIf="fechaNacimiento.invalid && fechaNacimiento.touched"
+                         class="text-danger small">
+                      La fecha de nacimiento es obligatoria.
+                    </div>
+                  </div>
+
+                  <!-- Teléfono -->
+                  <div class="mb-4">
+                    <label class="form-label">Número de Teléfono</label>
+                    <input
+                      type="text"
+                      name="numeroTelefono"
+                      ngModel
+                      required
+                      class="form-control"
+                      #numeroTelefono="ngModel">
+                    <div *ngIf="numeroTelefono.invalid && numeroTelefono.touched"
+                         class="text-danger small">
+                      El teléfono es obligatorio.
+                    </div>
+                  </div>
+
+                  <!-- País -->
+                  <div class="mb-4">
+                    <label class="form-label">País</label>
+                    <input
+                      type="text"
+                      name="pais"
+                      ngModel
+                      required
+                      class="form-control"
+                      #pais="ngModel">
+                    <div *ngIf="pais.invalid && pais.touched"
+                         class="text-danger small">
+                      El país es obligatorio.
+                    </div>
+                  </div>
+
+                  <!-- Contraseña -->
+                  <div class="mb-4">
+                    <label class="form-label">Contraseña</label>
+                    <input
+                      type="password"
+                      name="contrasena"
+                      ngModel
+                      required
+                      minlength="6"
+                      class="form-control"
+                      #contrasena="ngModel">
+                    <div *ngIf="contrasena.invalid && contrasena.touched"
+                         class="text-danger small">
+                      La contraseña es obligatoria (mín. 6 caracteres).
+                    </div>
+                  </div>
+
+                  <!-- Botón -->
+                  <div class="d-flex justify-content-center mb-3">
+                    <button
+                      type="submit"
+                      class="btn btn-primary btn-lg"
+                      [disabled]="usuarioForm.invalid">
+                      Registrar
+                    </button>
+                  </div>
+
+                </form>
+
+                <!-- Mensajes -->
+                <div *ngIf="mensaje"
+                     class="alert alert-success mt-3 text-center">
+                  {{ mensaje }}
+                </div>
+
+                <div *ngIf="errorMensaje"
+                     class="alert alert-danger mt-3 text-center">
+                  {{ errorMensaje }}
+                </div>
+
+                <div class="text-center mt-4">
+                  <button type="button"
+                          (click)="navigateTo('/home')"
+                          class="btn btn-outline-secondary btn-lg">
+                    Volver al Inicio
+                  </button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
