@@ -45,13 +45,12 @@ public class UsuarioDB {
         try {
             conn = DataSourceDBSingleton.getInstance().getConnection();
             conn.setAutoCommit(false); // INICIO TRANSACCIÓN
-
-            // 1. Insertar usuario
+   
             try (PreparedStatement ps = conn.prepareStatement(sqlUsuario, PreparedStatement.RETURN_GENERATED_KEYS)) {
                 ps.setString(1, usuario.getCorreo());
                 ps.setString(2, seguridad.encriptarContrasena(usuario.getContrasena()));
-                ps.setString(3, usuario.getNombre_completo());
-                ps.setDate(4, new java.sql.Date(usuario.getFecha_nacimiento().getTime()));
+                ps.setString(3, usuario.getNombreCompleto());
+                ps.setDate(4, new java.sql.Date(usuario.getFechaNacimiento().getTime()));
                 ps.setString(5, usuario.getNickname());
                 ps.setString(6, usuario.getTelefono());
                 ps.setString(7, usuario.getPais());
@@ -62,26 +61,24 @@ public class UsuarioDB {
                     if (!rs.next()) {
                         throw new SQLException("No se pudo obtener el ID del usuario");
                     }
-                    usuario.setId_usuario(rs.getInt(1));
+                    usuario.setIdUsuario(rs.getInt(1));
                 }
             }
 
-            // 2. Asignar rol
             try (PreparedStatement ps = conn.prepareStatement(sqlUsuarioRol)) {
-                ps.setInt(1, usuario.getId_usuario());
+                ps.setInt(1, usuario.getIdUsuario());
                 ps.setInt(2, obtenerIdRol(usuario.getRol(), conn));
                 ps.executeUpdate();
             }
 
-            // 3. Crear cartera SOLO si es GAMER
             if (usuario.getRol() == Rol.GAMER) {
                 try (PreparedStatement ps = conn.prepareStatement(sqlCartera)) {
-                    ps.setInt(1, usuario.getId_usuario());
+                    ps.setInt(1, usuario.getIdUsuario());
                     ps.executeUpdate();
                 }
             }
 
-            conn.commit(); // FIN TRANSACCIÓN
+            conn.commit(); 
             return true;
 
         } catch (SQLException e) {
@@ -139,8 +136,8 @@ public class UsuarioDB {
         try (PreparedStatement ps = conn.prepareStatement(sqlUsuario, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, usuario.getCorreo());
             ps.setString(2, seguridad.encriptarContrasena(usuario.getContrasena()));
-            ps.setString(3, usuario.getNombre_completo());
-            ps.setDate(4, new java.sql.Date(usuario.getFecha_nacimiento().getTime()));
+            ps.setString(3, usuario.getNombreCompleto());
+            ps.setDate(4, new java.sql.Date(usuario.getFechaNacimiento().getTime()));
             ps.setString(5, usuario.getNickname());
             ps.setString(6, usuario.getTelefono());
             ps.setString(7, usuario.getPais());
@@ -150,12 +147,12 @@ public class UsuarioDB {
                 if (!rs.next()) {
                     throw new SQLException("No se pudo obtener ID del usuario");
                 }
-                usuario.setId_usuario(rs.getInt(1));
+                usuario.setIdUsuario(rs.getInt(1));
             }
         }
 
         try (PreparedStatement ps = conn.prepareStatement(sqlUsuarioRol)) {
-            ps.setInt(1, usuario.getId_usuario());
+            ps.setInt(1, usuario.getIdUsuario());
             ps.setInt(2, obtenerIdRol(usuario.getRol(), conn));
             ps.executeUpdate();
         }
@@ -177,7 +174,7 @@ public class UsuarioDB {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     Usuario usuario = new Usuario();
-                    usuario.setId_usuario(rs.getInt("id_usuario"));
+                    usuario.setIdUsuario(rs.getInt("id_usuario"));
                     usuario.setCorreo(rs.getString("correo"));
 
                     usuario.setContrasena(rs.getString("password_hash"));

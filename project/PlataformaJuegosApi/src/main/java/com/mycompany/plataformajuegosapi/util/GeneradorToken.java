@@ -24,7 +24,7 @@ public class GeneradorToken {
     public String crearTokenJWT(Usuario usuario) {
         return Jwts.builder()
                 .setSubject(usuario.getCorreo())
-                .claim("idUsuario", usuario.getId_usuario())
+                .claim("idUsuario", usuario.getIdUsuario())
                 .claim("rol", usuario.getRol().name())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 3600000))

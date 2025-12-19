@@ -84,7 +84,7 @@ public class UsuarioController {
 
             Map<String, Object> respuesta = new HashMap<>();
             respuesta.put("token", token);
-            respuesta.put("idUsuario", usuarioAutenticado.getId_usuario());
+            respuesta.put("idUsuario", usuarioAutenticado.getIdUsuario());
             respuesta.put("correo", usuarioAutenticado.getCorreo());
             respuesta.put("rol", usuarioAutenticado.getRol());
 
